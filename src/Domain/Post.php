@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Post\Domain;
+namespace App\Domain;
 
+use App\Repository\PostRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: PostRepository::class)]
@@ -12,30 +13,19 @@ class Post
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column]
-    private ?int $authorId = null;
-
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 50)]
     private ?string $tittle = null;
 
     #[ORM\Column(length: 255)]
     private ?string $body = null;
 
+    #[ORM\ManyToOne(inversedBy: 'posts')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Author $authorId = null;
+
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getAuthorId(): ?int
-    {
-        return $this->authorId;
-    }
-
-    public function setAuthorId(int $authorId): self
-    {
-        $this->authorId = $authorId;
-
-        return $this;
     }
 
     public function getTittle(): ?string
@@ -58,6 +48,18 @@ class Post
     public function setBody(string $body): self
     {
         $this->body = $body;
+
+        return $this;
+    }
+
+    public function getAuthorId(): ?Author
+    {
+        return $this->authorId;
+    }
+
+    public function setAuthorId(?Author $authorId): self
+    {
+        $this->authorId = $authorId;
 
         return $this;
     }

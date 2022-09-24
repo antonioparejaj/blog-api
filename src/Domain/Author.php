@@ -30,8 +30,13 @@ class Author
     #[ORM\OneToMany(mappedBy: 'authorId', targetEntity: Post::class)]
     private Collection $posts;
 
-    public function __construct()
+    public function __construct(int $id, string $name, string $email, string $phone, string $website)
     {
+        $this->id = $id;
+        $this->name = $name;
+        $this->email = $email;
+        $this->phone = $phone;
+        $this->website = $website;
         $this->posts = new ArrayCollection();
     }
 
@@ -100,7 +105,7 @@ class Author
     {
         if (!$this->posts->contains($post)) {
             $this->posts->add($post);
-            $post->setAuthorId($this);
+            $post->setAuthor($this);
         }
 
         return $this;
@@ -110,8 +115,8 @@ class Author
     {
         if ($this->posts->removeElement($post)) {
             // set the owning side to null (unless already changed)
-            if ($post->getAuthorId() === $this) {
-                $post->setAuthorId(null);
+            if ($post->getAuthor() === $this) {
+                $post->setAuthor(null);
             }
         }
 

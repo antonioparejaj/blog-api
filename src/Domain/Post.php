@@ -14,28 +14,37 @@ class Post
     private ?int $id = null;
 
     #[ORM\Column(length: 50)]
-    private ?string $tittle = null;
+    private ?string $title = null;
 
     #[ORM\Column(length: 255)]
     private ?string $body = null;
 
     #[ORM\ManyToOne(inversedBy: 'posts')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Author $authorId = null;
+    private ?Author $author = null;
+
+    public function __construct(int $id, string $title, string $body, Author $author)
+    {
+        $this->id = $id;
+        $this->title = $title;
+        $this->body = $body;
+        $this->author = new Author($author->getId(), $author->getName(), $author->getEmail(), $author->getPhone(), $author->getWebsite());
+        $this->author->addPost($this);
+    }
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getTittle(): ?string
+    public function getTitle(): ?string
     {
-        return $this->tittle;
+        return $this->title;
     }
 
-    public function setTittle(string $tittle): self
+    public function setTitle(string $title): self
     {
-        $this->tittle = $tittle;
+        $this->title = $title;
 
         return $this;
     }
@@ -52,14 +61,14 @@ class Post
         return $this;
     }
 
-    public function getAuthorId(): ?Author
+    public function getAuthor(): ?Author
     {
-        return $this->authorId;
+        return $this->author;
     }
 
-    public function setAuthorId(?Author $authorId): self
+    public function setAuthor(?Author $author): self
     {
-        $this->authorId = $authorId;
+        $this->author = $author;
 
         return $this;
     }
